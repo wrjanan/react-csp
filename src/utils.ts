@@ -135,7 +135,7 @@ async function getHashes(): Promise<string[]> {
   if (!fileNames) {
     throw new Error("No main JS file found, should be main.xxxxx.js");
   }
-  let javascriptFile = JSON.parse(await readFile(`${javascriptPath}/${fileNames[0]}`, "utf8"));
+  let javascriptFile =  await readFile(`${javascriptPath}/${fileNames}`, "utf8");
 
   return computeHashes(javascriptFile);
 }
