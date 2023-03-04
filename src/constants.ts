@@ -14,8 +14,8 @@ args.forEach(function (value, index) {
 
 const baseDir = process.cwd();
 const configPath = (extension: ConfigExtension) =>
-path.join(process.cwd(), `csp.${extension}`);
-const htmlPath = path.join(process.cwd(), "public", filename);
-const javascriptPath = path.join(process.cwd(), "build", "static", "js");
+path.posix.join(process.cwd(), `csp.${extension}`);
+const htmlPath = path.posix.join(process.cwd(), "public", filename);
+const javascriptPath = path.posix.join(process.cwd(), "build", "static", "js");
 
 export { baseDir, configPath, htmlPath, filename, javascriptPath };
