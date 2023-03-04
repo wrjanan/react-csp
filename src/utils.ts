@@ -108,16 +108,10 @@ const computeHashes = (indexHtml) => {
   const sw = /([\s\S]*?)/gm;
 
   const scriptHashes = [];
-
-  let m;
-  while ((m = sw.exec(indexHtml))) {
-    const content = m[1];
-
-    scriptHashes.push(
-      `'sha256-${createHash("sha256")
-               .update(content).digest("base64")}'`
-    );
-  }
+  scriptHashes.push(
+    `'sha256-${createHash("sha256")
+              .update(indexHtml).digest("base64")}'`
+  );
 
   return scriptHashes;
 };
