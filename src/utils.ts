@@ -110,15 +110,13 @@ const computeHashes = (indexHtml) => {
   const scriptHashes = [];
   scriptHashes.push(
     `'sha256-${createHash("sha256")
-              .update(indexHtml).digest("base64")}'`
+              .update(indexHtml, "utf8").digest("base64")}'`
   );
 
   return scriptHashes;
 };
 
 async function getHashes(): Promise<string[]> {
-  let content = "";
-  
   const allFiles = fs.readdirSync(javascriptPath);
   const fileNames = allFiles.find((fileName) =>
     Array.isArray(fileName.match(patterns.javascriptFiles))
