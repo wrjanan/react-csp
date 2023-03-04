@@ -2,8 +2,11 @@ import * as util from "util";
 import * as fs from "fs";
 import chalk from "chalk";
 
-import { baseDir, configPath, htmlPath, filename } from "./constants";
+import { baseDir, configPath, htmlPath, filename, javascriptPath } from "./constants";
 import { CspConfig } from "./types";
+import { createHash } from "crypto";
+import { join } from "path";
+// import { readFile } from "fs";
 
 let env = "prod";
 const args = process.argv.slice(2);
@@ -18,9 +21,12 @@ if (Array.isArray(args) && args[0] !== undefined) {
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
+const hashToggle = true;
+
 const patterns = {
   configName: new RegExp("(^|\\W)" + "(csp*?.(js|json))" + "($|\\W)", "gi"),
   configExtenstion: /(?:\.([^.]+))?$/,
+  javascriptFiles: new RegExp("(^|\\W)" + "(main*?.(js))" + "($|\\W)", "gi"),
 };
 
 async function getConfig() {
@@ -77,7 +83,7 @@ async function writeToHtml(html: string) {
     throw e;
   }
 }
-function formatCSP(config: CspConfig): string {
+async function formatCSP(config: CspConfig): Promise<string> {
   let content = "";
   for (const key in config) {
     const strs = config[key];
@@ -87,9 +93,51 @@ function formatCSP(config: CspConfig): string {
     } else {
       content += strs;
     }
+
+    if(hashToggle) {
+      const hashes = await getHashes();
+      content += " " + hashes.join(" ");
+    }
     content += "; ";
   }
   return `<meta http-equiv="Content-Security-Policy" content="${content}" />`;
+}
+
+const computeHashes = (indexHtml) => {
+  // const sw = /<script[\s\S]*?>([\s\S]*?)<\/script>/gm;
+  const sw = /([\s\S]*?)/gm;
+
+  const scriptHashes = [];
+
+  let m;
+  while ((m = sw.exec(indexHtml))) {
+    const content = m[1];
+
+    scriptHashes.push(
+      `'sha256-${createHash("sha256")
+               .update(content).digest("base64")}'`
+    );
+  }
+
+  return scriptHashes;
+};
+
+async function getHashes(): Promise<string[]> {
+  let content = "";
+  
+  const allFiles = fs.readdirSync(javascriptPath);
+  const fileNames = allFiles.find((fileName) =>
+    Array.isArray(fileName.match(patterns.javascriptFiles))
+  );
+  console.log(
+    `Reading javascript files from ${javascriptPath} for ${chalk.cyan("*.js")}`
+  );
+  if (!fileNames) {
+    throw new Error("No main JS file found, should be main.xxxxx.js");
+  }
+  let javascriptFile = JSON.parse(await readFile(`${javascriptPath}/${fileNames[0]}`, "utf8"));
+
+  return computeHashes(javascriptFile);
 }
 
 export { readFile, writeFile, getConfig, loadHTML, writeToHtml, formatCSP };

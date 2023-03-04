@@ -11,7 +11,7 @@ const cspSelector = 'meta[http-equiv="Content-Security-Policy"]';
 async function reactCsp() {
   const config = await getConfig();
   const html = await loadHTML();
-  const csp = formatCSP(config);
+  const csp = await formatCSP(config);
   const newHTML = reshapeHTML(html, csp);
   await writeToHtml(newHTML);
 }
