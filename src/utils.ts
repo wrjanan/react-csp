@@ -26,7 +26,7 @@ const hashToggle = true;
 const patterns = {
   configName: new RegExp("(^|\\W)" + "(csp*?.(js|json))" + "($|\\W)", "gi"),
   configExtenstion: /(?:\.([^.]+))?$/,
-  javascriptFiles: new RegExp("(^|\\W)" + "(main*?.(js))" + "($|\\W)", "gi"),
+  javascriptFiles: new RegExp("(^|\\W)" + "(main.*?.(js))" + "($|\\W)", "gi"),
 };
 
 async function getConfig() {

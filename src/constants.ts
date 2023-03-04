@@ -15,6 +15,6 @@ const baseDir = process.cwd();
 const configPath = (extension: ConfigExtension) =>
   process.cwd() + `/csp.${extension}`;
 const htmlPath = process.cwd() + `/public/${filename}`;
-const javascriptPath = process.cwd() + `\\build\\static\\js\\`;
+const javascriptPath = process.cwd() + `/build/static/js/`;
 
 export { baseDir, configPath, htmlPath, filename, javascriptPath };
