@@ -94,7 +94,7 @@ async function formatCSP(config: CspConfig): Promise<string> {
       content += strs;
     }
 
-    if(hashToggle) {
+    if(hashToggle && key === "script-src") {
       const hashes = await getHashes();
       content += " " + hashes.join(" ");
     }
@@ -128,7 +128,6 @@ async function getHashes(): Promise<string[]> {
     throw new Error("No main JS file found, should be main.xxxxx.js");
   }
   let javascriptFile =  await readFile(`${javascriptPath}/${fileNames}`, "utf8");
-
   return computeHashes(javascriptFile);
 }
 
