@@ -3,6 +3,7 @@ import { ConfigExtension } from "./types";
 let filename = "index.html";
 let path = "/public/";
 let jsPath = "/build/static/js/";
+let cfgPath = "";
 const args = process.argv.slice(2);
 
 const checkFileNameArg = (value, index) => {
@@ -29,6 +30,14 @@ const checkJSPathArg = (value, index) => {
   }
 }
 
+const checkConfigArg = (value, index) => {
+  if(value === '--configpath' || value === '--cfgp') {
+    if(args[index+1]) {
+      cfgPath = args[index+1];
+    }
+  }
+}
+
 args.forEach(function (value, index) {
   checkFileNameArg(value, index)
   checkIndexPathArg(value, index)
@@ -37,7 +46,7 @@ args.forEach(function (value, index) {
 
 const baseDir = process.cwd();
 const configPath = (extension: ConfigExtension) =>
-  process.cwd() + `/csp.${extension}`;
+  process.cwd() + `${cfgPath}/csp.${extension}`;
 const htmlPath = process.cwd() + `${path}${filename}`;
 const javascriptPath = process.cwd() + `${jsPath}`;
 
