@@ -42,6 +42,7 @@ args.forEach(function (value, index) {
   checkFileNameArg(value, index)
   checkIndexPathArg(value, index)
   checkJSPathArg(value, index)
+  checkConfigArg(value, index)
 });
 
 const baseDir = process.cwd();
